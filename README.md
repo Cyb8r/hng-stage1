@@ -58,7 +58,7 @@ This README provides guidiance on how to deploy a static website on Azure using 
 
 2. Copy files to NGINX's serving diretory:
 
-     sudo mv * /var/www/html
+        sudo mv * /var/www/html
 
 3. Edit NGINX configuration:
 
