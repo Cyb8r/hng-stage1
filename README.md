@@ -6,11 +6,11 @@ This README provides guidiance on how to deploy a static website on Azure using 
 
 ## Table of contents
 
-1. ### Prerequistes
-2. ### Azure VM Setup
-3. ### Server Configuration
-4. ### Website Deployment
-5. ### Website Access
+1. Prerequistes
+2. Azure VM Setup
+3. Server Configuration
+4. Website Deployment
+5. Website Access
 
 ## Prerequisites 
 
