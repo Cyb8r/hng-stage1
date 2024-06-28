@@ -76,7 +76,7 @@ This README provides guidiance on how to deploy a static website on Azure using 
         location / {
         try_files $uri $uri/ =404;
         }
-    }
+        }
 
 4. Test NGINX configuration:
 
