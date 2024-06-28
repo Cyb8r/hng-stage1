@@ -34,9 +34,9 @@ This README provides guidiance on how to deploy a static website on Azure using 
 
 1. SSH into the virtual machine:
 
-        ``` ssh -i <path-to-private-key> azureuser@<your-vm-ip>
-         ssh -i azureuser@<your-vm-ip> prompt to login >> insert the passowrd previously configured.
-        ```
+        ssh -i <path-to-private-key> azureuser@<your-vm-ip>
+        ssh -i azureuser@<your-vm-ip> prompt to login >> insert the passowrd previously configured.
+
 2. Update the linux server:
 
          sudo apt update && sudo apt upgrade -y
