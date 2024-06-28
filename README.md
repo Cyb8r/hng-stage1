@@ -50,5 +50,38 @@ This README provides guidiance on how to deploy a static website on Azure using 
          sudo systemctl start nginx
          sudo systemctl enable nginx
 
+## Web Deployment
 
+1. Upload the cotent of the website files to the virtual machine:
 
+    git clone [https://](https://github.com/Cyb8r/hng-stage1.git) && cd hng-stage1/web
+
+2. Copy files to NGINX's serving diretory:
+
+    sudo mv * /var/www/html
+
+3. Edit NGINX configuration:
+
+        server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name_;
+
+    add_header X-Powered-By "NGINX $nginx_version";
+
+    location / {
+        try_files $uri $uri/ =404;
+        }
+    }
+
+4. Test NGINX configuration:
+
+    sudo nginx -t
+
+5. Reload NGINX:
+
+    sudo systemctl reload nginx
