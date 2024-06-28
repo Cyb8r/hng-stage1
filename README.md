@@ -17,18 +17,19 @@ This README provides guidiance on how to deploy a static website on Azure using 
 - An Azure account
 - Basic knowledge of Linux commands
 - SSH client (e.g., PuTTY or MobaXtem for Windows or Terminal for macOS/Linux)
-- l Your static website files (HTML, CSS, JavaScript)
+- Your static website files (HTML, CSS, JavaScript)
 
 ## Azure VM Setup
 
 1. Login to the Azure Portal (https://portal.azure.com)
 2. Create a new Vitual Machine
-    - Click "Create a resource" > "VirtualMachine"
-    - Select Ubuntu server 20.04 LTS or laterb versions. 
+    - Click "Create a resource" > "Virtual Machine"
+    - Select Ubuntu server 20.04 LTS or later versions.
     - Ensure to select appropriate Virtual machine size.
     - Enable publicj inbound ports: SSH(22) AND HTTP(80)
-    - Creat and download the ssh key or create a username and password. 
-3. Note public Virtual machine Ip address.
+    - Create and download the ssh key or create a username and password.
+
+3. Note the public Virtual machine Ip address.
 
 ## Server Configuration
 
