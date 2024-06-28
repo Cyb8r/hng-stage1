@@ -39,7 +39,7 @@ This README provides guidiance on how to deploy a static website on Azure using 
 2. update the linux server:
         ``` sudo apt update && sudo apt upgrade -y
 3. Install NGINX:
-        `` sudo apt install nginx -y
+        ``` sudo apt install nginx -y
 4. Start and enable NGINX:
         ``` sudo systemctl start nginx
         ``` sudo systemctl enable nginx
