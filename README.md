@@ -36,11 +36,16 @@ This README provides guidiance on how to deploy a static website on Azure using 
 
         ``` ssh -i <path-to-private-key> azureuser@<your-vm-ip>
         ``` ssh -i azureuser@<your-vm-ip> prompt to login >> insert the passowrd previously configured.
-2. update the linux server:
+2. Update the linux server:
+
         ``` sudo apt update && sudo apt upgrade -y
+
 3. Install NGINX:
+
         ``` sudo apt install nginx -y
+
 4. Start and enable NGINX:
+
         ``` sudo systemctl start nginx
         ``` sudo systemctl enable nginx
 
