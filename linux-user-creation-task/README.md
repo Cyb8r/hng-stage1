@@ -2,7 +2,7 @@ Here's my submission of my HNG 11 Stage one task
 
 ## Linux User Creation Bash Script
 
-This document provides an overview of the create_users.sh script, designed to automate user and group creation on a Linux system with security best practices in mind.
+This document provides an overview of the `create_users.sh` script, designed to automate user and group creation on a Linux system with security best practices in mind.
 
 ## Features
 
@@ -24,9 +24,9 @@ Whitespaces around usernames and groups wil be ignored.
 
 ## Usage
 
-1. Save the scripts as create_users.sh.
+1. Save the scripts as `create_users.sh`.
 2. Modify permissions: `chmod +x create_users.sh`
-3. Update the USER_FILE variable in the script to point to your user information file path.
+3. Update the `USER_FILE` variable in the script to point to your user information file path.
 4. Run the script: `./create_users.sh`
 
 ## Important Notes
