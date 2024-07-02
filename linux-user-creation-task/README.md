@@ -14,7 +14,7 @@ This document provides an overview of the `create_users.sh` script, designed to 
 
 ## Requirements
 
-- User: Must have sudo prvileges to run the script.
+- User: Must have `sudo` prvileges to run the script.
 - Text File: User information formatted as username; groups (one entry per line).
 
 Whitespaces around usernames and groups wil be ignored.
