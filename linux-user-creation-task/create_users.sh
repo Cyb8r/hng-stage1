@@ -1,69 +1,103 @@
 #!/bin/bash
 
-# Script configuration
-USER_FILE="/path/to/your/user_info.txt"
-LOG_FILE="/var/log/user_management.log"
-PASSWORD_FILE="/var/secure/user_passwords.txt"
+# create folders for logs and secure passwords
+mkdir -p /var/log /var/secure
 
-# Function to generate random password
-function generate_password() {
-  length=16
-  cat /dev/urandom | tr -dc 'A-Za-z0-9!@#$%^&*' | fold -w $length | head -n 1
+# create logs file and passwords file
+touch /var/log/user_management.log
+touch /var/secure/user_passwords.txt
+
+# make password file secure (read and write permissions for file owner only)
+
+chmod 600 /var/secure/user_passwords.txt
+
+# function to log actions to log file
+log_action() {
+    echo "$(date) - $1" >> "/var/log/user_management.log"
 }
 
-# Main script body
-echo "$(date) - Starting user creation script" >> $LOG_FILE
 
-# Check for text file existence
-if [ ! -f "$USER_FILE" ]; then
-  echo "Error: User information file '$USER_FILE' not found!" >> $LOG_FILE
-  exit 1
+create_user() {
+
+    # defines 3 variables passed to the function: user, groups, and password
+    local user="$1"
+    local groups="$2"
+    local password
+
+    # check if user already exists by logging user information with id
+
+    if id "$user" &>/dev/null; then
+        log_action "User $user already exists."
+        return
+    fi
+
+    # Create personal group for the user
+    groupadd "$user"
+
+    # Create additional groups if they do not exist
+    IFS=' ' read -ra group_array <<< "$groups"
+
+    # Log the group array
+    log_action "User $user will be added to groups: ${group_array[*]}"
+
+    for group in "${group_array[@]}"; do
+        group=$(echo "$group" | xargs)  # Trim whitespace
+        if ! getent group "$group" &>/dev/null; then
+            groupadd "$group"
+            log_action "Group $group created."
+        fi
+    done
+
+    # Create user with home directory and shell, primary group set to the personal group
+    useradd -m -s /bin/bash -g "$user" "$user"
+    if [ $? -eq 0 ]; then
+        log_action "User $user created with primary group: $user"
+    else
+        log_action "Failed to create user $user."
+        return
+    fi
+
+    # Add the user to additional groups
+    for group in "${group_array[@]}"; do
+        usermod -aG "$group" "$user"
+    done
+    log_action "User $user added to groups: ${group_array[*]}"
+
+    # generate password and store it securely in a file
+    password=$(</dev/urandom tr -dc A-Za-z0-9 | head -c 12)
+    echo "$user:$password" | chpasswd
+
+    # store user and password securely in a file
+    echo "$user,$password" >> "/var/secure/user_passwords.txt"
+
+    # set permissions and ownership for user home directory
+    chmod 700 "/home/$user"
+    chown "$user:$user" "/home/$user"
+
+    log_action "Password for user $user set and stored securely."
+}
+
+# check if user list file is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <user_list_file>"
+    exit 1
 fi
 
-# Loop through each user entry in the text file
-while IFS=';' read -r username groups; do
+filename="$1"
 
-  # Remove leading/trailing whitespace
-  username="${username%%}"
-  username="${username##}"
-  groups="${groups%%}"
-  groups="${groups##}"
+if [ ! -f "$filename" ]; then
+    echo "Users list file $filename not found."
+    exit 1
+fi
 
-  # Create user group (same name as username)
-  if ! groupadd "$username" >> $LOG_FILE 2>&1; then
-    echo "Warning: Group '$username' already exists." >> $LOG_FILE
-  fi
+# read user list file and create users
+while IFS=';' read -r user groups; do
+    user=$(echo "$user" | xargs)
+    groups=$(echo "$groups" | xargs | tr -d ' ')
 
-  # Create user with primary group set to user group
-  if ! useradd -m -g "$username" "$username" >> $LOG_FILE 2>&1; then
-    echo "Error: Failed to create user '$username'." >> $LOG_FILE
-    continue
-  fi
+    # Replace commas with spaces for usermod group format
+    groups=$(echo "$groups" | tr ',' ' ')
+    create_user "$user" "$groups"
+done < "$filename"
 
-  # Generate random password
-  password=$(generate_password)
-
-  # Set user password
-  echo "$username:$password" | chpasswd --stdin >> $LOG_FILE 2>&1
-
-  # Store password securely (modify permissions as needed)
-  echo "$username:$password" >> $PASSWORD_FILE
-
-  # Set ownership and permissions on home directory
-  chown -R "$username:$username" "/home/$username" >> $LOG_FILE 2>&1
-  chmod 700 "/home/$username" >> $LOG_FILE 2>&1
-
-  # Add user to additional groups (comma-separated)
-  for group in $(echo "$groups" | tr ',' ' '); do
-    if ! usermod -a -G "$group" "$username" >> $LOG_FILE 2>&1; then
-      echo "Warning: Failed to add user '$username' to group '$group'." >> $LOG_FILE
-    fi
-  done
-
-  echo "User '$username' created successfully." >> $LOG_FILE
-
-done < "$USER_FILE"
-
-echo "$(date) - User creation script completed." >> $LOG_FILE
-
-exit 0
+echo "User creation process completed. Check /var/log/user_management.log for details."
